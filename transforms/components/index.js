@@ -15,16 +15,41 @@ const getPropertyName = ({ name: propertyName }) => {
 
 const addTypeApplication = (applications, expression) => {
   if (!applications && !expression) return {};
-  return {
-    type: expression.name.toLowerCase(),
-    items: {
-      type: applications[0].name,
-    },
-  };
+
+  if (applications) {
+    return {
+      type: expression.name.toLowerCase(),
+      items: {
+        type: applications[0].name,
+      }
+    };
+  } else {
+    if (expression.name) {
+      const isPrimitive = validateTypes(expression.name.toLowerCase());
+      return (isPrimitive ? { type: expression.name.toLowerCase() } : { $ref: `#/components/schemas/${expression.name}` });
+    } else if (!expression.name && expression.applications) {
+      return {
+        type: expression.expression.name.toLowerCase(),
+        items: {
+          type: expression.applications[0].name,
+        }
+      };
+    } else if (expression.type === 'UnionType') {
+      const unionItems = expression.elements.map(e => {
+        const isPrimitive = validateTypes(e.name.toLowerCase());
+        return isPrimitive ? { type: e.name.toLowerCase() } : { $ref: `#/components/schemas/${e.name}` }
+      })
+      return {
+        oneOf: unionItems
+      }
+    } else {
+      console.warn("Unhandled swagger type encountered, notify aimee/renaldas if you see this warning.")
+    }
+  }
 };
 
 const addRefSchema = (typeName, applications, elements) => {
-  if (!typeName && !elements) return { items: formatRefSchema(applications) };
+  if (!typeName && !elements && applications) return { items: formatRefSchema(applications) };
   return {};
 };
 
@@ -32,7 +57,7 @@ const formatProperties = (properties, options = {}) => {
   if (!properties || !Array.isArray(properties)) return {};
   return properties.reduce((acum, property) => {
     const name = getPropertyName(property);
-    const isRequired = property.name.includes(REQUIRED);
+    const isRequired = property.name.includes(REQUIRED) || property.type?.type!=="OptionalType";
     const {
       name: typeName, applications, expression, elements,
     } = property.type;
@@ -60,7 +85,7 @@ const formatProperties = (properties, options = {}) => {
 };
 
 const getRequiredProperties = properties => (
-  properties.filter(({ name }) => name.includes(REQUIRED))
+  properties.filter(({ name, type }) => name.includes(REQUIRED) || type?.type!=="OptionalType")
 );
 
 const formatRequiredProperties = requiredProperties => requiredProperties.map(getPropertyName);
