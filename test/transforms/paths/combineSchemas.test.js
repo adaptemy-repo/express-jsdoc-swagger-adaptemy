@@ -54,15 +54,15 @@ test('should parse component with anyOf keyword', () => {
      * A song
      * @typedef {object} Song
      * @property {string} title.required
-     * @property {string} artist
-     * @property {number} year
+     * @property {string=} artist
+     * @property {number=} year
      */
   `,
   `
     /**
      * Album
      * @typedef {object} Album
-     * @property {anyOf|Song|Album} firstSong
+     * @property {anyOf|Song|Album=} firstSong
      */
   `];
   const expected = {
@@ -163,15 +163,15 @@ test('should parse component with anyOf array keyword', () => {
      * A song
      * @typedef {object} Song
      * @property {string} title.required
-     * @property {string} artist
-     * @property {number} year
+     * @property {string=} artist
+     * @property {number=} year
      */
   `,
   `
     /**
      * Album
      * @typedef {object} Album
-     * @property {anyOf|Song[]|Album|string|string[]|null} firstSong
+     * @property {anyOf|Song[]|Album|string|string[]|null=} firstSong
      */
   `];
   const expected = {
@@ -242,10 +242,10 @@ test('should parse component with jsdoc syntax for multiple data types', () => {
      * A song
      * @typedef {object} Song
      * @property {string} title.required
-     * @property {string} artist
-     * @property {number} year
-     * @property {(string|null)} album
-     * @property {object|number} releaseDate
+     * @property {string=} artist
+     * @property {number=} year
+     * @property {(string|null)=} album
+     * @property {object|number=} releaseDate
      */
   `];
   const expected = {

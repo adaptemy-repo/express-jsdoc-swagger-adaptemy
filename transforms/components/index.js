@@ -21,31 +21,30 @@ const addTypeApplication = (applications, expression) => {
       type: expression.name.toLowerCase(),
       items: {
         type: applications[0].name,
-      }
+      },
     };
-  } else {
-    if (expression.name) {
-      const isPrimitive = validateTypes(expression.name.toLowerCase());
-      return (isPrimitive ? { type: expression.name.toLowerCase() } : { $ref: `#/components/schemas/${expression.name}` });
-    } else if (!expression.name && expression.applications) {
-      return {
-        type: expression.expression.name.toLowerCase(),
-        items: {
-          type: expression.applications[0].name,
-        }
-      };
-    } else if (expression.type === 'UnionType') {
-      const unionItems = expression.elements.map(e => {
-        const isPrimitive = validateTypes(e.name.toLowerCase());
-        return isPrimitive ? { type: e.name.toLowerCase() } : { $ref: `#/components/schemas/${e.name}` }
-      })
-      return {
-        oneOf: unionItems
-      }
-    } else {
-      console.warn("Unhandled swagger type encountered, notify aimee/renaldas if you see this warning.")
-    }
   }
+  if (expression.name) {
+    const isPrimitive = validateTypes(expression.name.toLowerCase());
+    return (isPrimitive ? { type: expression.name.toLowerCase() } : { $ref: `#/components/schemas/${expression.name}` });
+  }
+  if (!expression.name && expression.applications) {
+    const isPrimitive = validateTypes(expression.applications[0].name);
+    return {
+      type: expression.expression.name.toLowerCase(),
+      items: isPrimitive
+        ? { type: expression.applications[0].name.toLowerCase() }
+        : { $ref: `#/components/schemas/${expression.applications[0].name}` },
+    };
+  }
+  if (expression.type === 'UnionType') {
+    return {
+      ...combineSchema(expression.elements),
+    };
+  }
+  // eslint-disable-next-line no-console
+  console.error('Unhandled swagger type encountered, notify aimee/renaldas if you see this warning.');
+  return {};
 };
 
 const addRefSchema = (typeName, applications, elements) => {
@@ -57,10 +56,11 @@ const formatProperties = (properties, options = {}) => {
   if (!properties || !Array.isArray(properties)) return {};
   return properties.reduce((acum, property) => {
     const name = getPropertyName(property);
-    const isRequired = property.name.includes(REQUIRED) || property.type?.type!=="OptionalType";
+    const isRequired = property.name.includes(REQUIRED) || property.type?.type !== 'OptionalType';
     const {
       name: typeName, applications, expression, elements,
     } = property.type;
+    const propertyExpression = property.type?.type === 'OptionalType' ? property.type?.expression : expression;
     const [descriptionValue, enumValues, jsonOptions] = formatDescription(property.description);
     const [description, format] = mapDescription(descriptionValue);
     return {
@@ -69,7 +69,7 @@ const formatProperties = (properties, options = {}) => {
         description,
         ...refSchema(typeName),
         ...combineSchema(elements),
-        ...addTypeApplication(applications, expression),
+        ...addTypeApplication(applications, propertyExpression),
         ...addRefSchema(typeName, applications, elements),
         ...(format ? { format } : {}),
         ...addEnumValues(enumValues),
@@ -85,7 +85,7 @@ const formatProperties = (properties, options = {}) => {
 };
 
 const getRequiredProperties = properties => (
-  properties.filter(({ name, type }) => name.includes(REQUIRED) || type?.type!=="OptionalType")
+  properties.filter(({ name, type }) => name.includes(REQUIRED) || type?.type !== 'OptionalType')
 );
 
 const formatRequiredProperties = requiredProperties => requiredProperties.map(getPropertyName);
