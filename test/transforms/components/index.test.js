@@ -50,9 +50,9 @@ describe('parseComponents method', () => {
       /**
        * A song
        * @typedef {object} Song
-       * @property {string} title - The title
-       * @property {string} artist - The artist
-       * @property {number} year - The year
+       * @property {string=} title - The title
+       * @property {string=} artist - The artist
+       * @property {number=} year - The year
        */
     `];
     const expected = {
@@ -89,9 +89,9 @@ describe('parseComponents method', () => {
       /**
        * A song
        * @typedef {object} Song
-       * @property {string} title - The title
-       * @property {string} artist - The artist - enum:value1,value2
-       * @property {number} year - The year - int64
+       * @property {string=} title - The title
+       * @property {string=} artist - The artist - enum:value1,value2
+       * @property {number=} year - The year - int64
        */
     `];
     const expected = {
@@ -133,9 +133,9 @@ describe('parseComponents method', () => {
       /**
        * A song
        * @typedef {object} Song
-       * @property {string} title - The title
-       * @property {string} artist - enum:value1,value2 - The artist
-       * @property {number} year - The year - int64
+       * @property {string=} title - The title
+       * @property {string=} artist - enum:value1,value2 - The artist
+       * @property {number=} year - The year - int64
        */
     `];
     const expected = {
@@ -177,9 +177,9 @@ describe('parseComponents method', () => {
       /**
        * A song
        * @typedef {object} Song
-       * @property {string} title - The title
-       * @property {string} artist - The artist - json:{"maxLength": 300}
-       * @property {number} year - The year - int64 - json:{"minimum": 2000}
+       * @property {string=} title - The title
+       * @property {string=} artist - The artist - json:{"maxLength": 300}
+       * @property {number=} year - The year - int64 - json:{"minimum": 2000}
        */
     `];
     const expected = {
@@ -220,8 +220,8 @@ describe('parseComponents method', () => {
        * A song
        * @typedef {object} Song
        * @property {string} title.required - The title
-       * @property {string} artist - The artist
-       * @property {number} year - The year - int64
+       * @property {string=} artist - The artist
+       * @property {number=} year - The year - int64
        */
     `];
     const expected = {
@@ -263,8 +263,8 @@ describe('parseComponents method', () => {
        * A song
        * @typedef {object} Song
        * @property {string} title.required - The title
-       * @property {string} artist - The artist
-       * @property {number} year - The year - int64
+       * @property {string=} artist - The artist
+       * @property {number=} year - The year - int64
        */
     `,
     `
@@ -272,7 +272,7 @@ describe('parseComponents method', () => {
        * Album
        * @typedef {object} Album
        * @property {string} name.required - Album name
-       * @property {number} length
+       * @property {number=} length
        */
     `];
     const expected = {
@@ -331,15 +331,15 @@ describe('parseComponents method', () => {
        * A song
        * @typedef {object} Song
        * @property {string} title.required - The title
-       * @property {string} artist - The artist
-       * @property {number} year - The year - int64
+       * @property {string=} artist - The artist
+       * @property {number=} year - The year - int64
        */
     `,
     `
       /**
        * Album
        * @typedef {object} Album
-       * @property {Song} firstSong
+       * @property {Song=} firstSong
        */
     `];
     const expected = {
@@ -391,15 +391,15 @@ describe('parseComponents method', () => {
        * A song
        * @typedef {object} Song
        * @property {string} title.required
-       * @property {string} artist
-       * @property {number} year
+       * @property {string=} artist
+       * @property {number=} year
        */
     `,
     `
       /**
        * Album
        * @typedef {object} Album
-       * @property {Song} firstSong
+       * @property {Song=} firstSong
        */
     `];
     const expected = {
@@ -450,8 +450,8 @@ describe('parseComponents method', () => {
        * A song
        * @typedef {object} Song
        * @property {string} title.required - The title
-       * @property {string} artist - The artist
-       * @property {number} year - The year - int64
+       * @property {string=} artist - The artist
+       * @property {number=} year - The year - int64
        */
     `,
     `
@@ -459,15 +459,15 @@ describe('parseComponents method', () => {
        * Author model
        * @typedef {object} Author
        * @property {string} name.required - Author name
-       * @property {number} age - Author age - int64
+       * @property {number=} age - Author age - int64
        */
     `,
     `
       /**
        * Album
        * @typedef {object} Album
-       * @property {Song} firstSong
-       * @property {Author} author
+       * @property {Song=} firstSong
+       * @property {Author=} author
        */
     `];
     const expected = {
@@ -540,8 +540,8 @@ describe('parseComponents method', () => {
       /**
        * Album
        * @typedef {object} Album
-       * @property {string} title - The title
-       * @property {array<string>} songs - songs array
+       * @property {string=} title - The title
+       * @property {array<string>=} songs - songs array
        */
     `];
     const expected = {
@@ -577,8 +577,8 @@ describe('parseComponents method', () => {
       /**
        * Album
        * @typedef {object} Album
-       * @property {string} title - The title
-       * @property {array<number>} years - years description
+       * @property {string=} title - The title
+       * @property {array<number>=} years - years description
        */
     `];
     const expected = {
@@ -614,8 +614,8 @@ describe('parseComponents method', () => {
       /**
        * Album
        * @typedef {object} Album
-       * @property {string} title - The title
-       * @property {array<number>} years
+       * @property {string=} title - The title
+       * @property {array<number>=} years
        */
     `];
     const expected = {
@@ -652,21 +652,21 @@ describe('parseComponents method', () => {
         /**
          * Album
          * @typedef {object} Album
-         * @property {array<Song>} Songs
+         * @property {array<Song>=} Songs
          */
       `],
       [`
         /**
          * Album
          * @typedef {object} Album
-         * @property {Array<Song>} Songs
+         * @property {Array<Song>=} Songs
          */
       `],
       [`
         /**
          * Album
          * @typedef {object} Album
-         * @property {Song[]} Songs
+         * @property {Song[]=} Songs
          */
       `],
     ];
@@ -701,7 +701,7 @@ describe('parseComponents method', () => {
       /**
        * SingleAlbum
        * @typedef {allOf|Song} SingleAlbum
-       * @property {array<Song>} Songs
+       * @property {array<Song>=} Songs
        */
     `];
     const expected = {
@@ -738,7 +738,7 @@ describe('parseComponents method', () => {
       /**
        * SongOrAlbum
        * @typedef {oneOf|Song|Album} SongOrAlbum
-       * @property {array<Song>} Songs
+       * @property {array<Song>=} Songs
        */
     `];
     const expected = {
@@ -779,8 +779,8 @@ describe('parseComponents method', () => {
        * A song
        * @typedef {object} Song
        * @property {string} title.required - The title
-       * @property {string} artist - The artist
-       * @property {number} year - The year - int64
+       * @property {string=} artist - The artist
+       * @property {number=} year - The year - int64
        */
     `];
     const expected = {
@@ -872,7 +872,7 @@ describe('parseComponents method', () => {
         * Profile
         * @typedef {object} Profile
         *
-        * @property {string} email
+        * @property {string=} email
         */
       `,
     `
