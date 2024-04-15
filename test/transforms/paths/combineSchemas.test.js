@@ -157,6 +157,49 @@ test('should parse jsdoc path reference params with allOf keyword', () => {
   expect(result).toEqual(expected);
 });
 
+test('should parse jsdoc path reference params as allOf using ampersand', () => {
+  const jsodInput = [`
+    /**
+     * GET /api/v1
+     * @param {Song&Album} name.query.required - name param description
+     */
+  `];
+  const expected = {
+    paths: {
+      '/api/v1': {
+        get: {
+          deprecated: false,
+          description: undefined,
+          summary: '',
+          responses: {},
+          security: [],
+          tags: [],
+          parameters: [{
+            deprecated: false,
+            description: 'name param description',
+            in: 'query',
+            name: 'name',
+            required: true,
+            schema: {
+              allOf: [
+                {
+                  $ref: '#/components/schemas/Song',
+                },
+                {
+                  $ref: '#/components/schemas/Album',
+                },
+              ],
+            },
+          }],
+        },
+      },
+    },
+  };
+  const parsedJSDocs = jsdocInfo()(jsodInput);
+  const result = setPaths({}, parsedJSDocs);
+  expect(result).toEqual(expected);
+});
+
 test('should parse component with anyOf array keyword', () => {
   const jsodInput = [`
     /**

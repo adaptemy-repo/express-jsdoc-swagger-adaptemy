@@ -38,7 +38,19 @@ const expressJSDocSwagger = app => (userOptions = {}, userSwagger = {}) => {
         ...swaggerObject,
         host: req.get('host'),
       };
-      req.swaggerDoc = swaggerObject;
+      // The below is a change to the order of the swagger output to put 'paths' before 'components'.
+      // This is to fix a bug where 'allOf' properties were not displaying correctly in the 'example value'.
+      // This is a known swagger-ui bug, where the suggested fix is to make sure paths appears before components.
+      // Reference links below:
+      // - https://github.com/swagger-api/swagger-ui/issues/5972
+      // - https://github.com/swagger-api/swagger-js/issues/1394
+      // - https://github.com/swagger-api/swagger-editor/issues/2765
+      const objectOrder = {
+        paths: null,
+        components: null,
+      };
+      const modifiedOrderObject = Object.assign(objectOrder, swaggerObject);
+      req.swaggerDoc = modifiedOrderObject;
       next();
     }, swaggerUi.serve, swaggerUi.setup(undefined, options.swaggerUiOptions));
   }
