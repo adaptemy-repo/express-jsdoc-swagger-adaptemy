@@ -161,7 +161,7 @@ test('should parse jsdoc path reference params as allOf using ampersand', () => 
   const jsodInput = [`
     /**
      * GET /api/v1
-     * @param {Song&Album} name.query.required - name param description
+     * @param {Song & Album} name.query.required - name param description
      */
   `];
   const expected = {
