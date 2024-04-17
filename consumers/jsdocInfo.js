@@ -1,7 +1,7 @@
 const doctrine = require('doctrine');
 
 const convertTagToAllOfUnionType = tag => {
-  const elementsToCombine = tag.type.name.split('&').map(t => ({ type: 'NameExpression', name: t }));
+  const elementsToCombine = tag.type.name.replaceAll(/\s/g, '').split('&').map(t => ({ type: 'NameExpression', name: t }));
   const elements = [{ type: 'NameExpression', name: 'allOf' }, ...elementsToCombine];
   const tagType = {
     type: 'UnionType',
@@ -16,6 +16,9 @@ const jsdocInfo = (options = { unwrap: true }) => comments => {
   if (!comments || !Array.isArray(comments)) return [];
   return comments.map(comment => {
     let modifiedComment = comment;
+    if (comment.includes(' & ') && !comment.includes('BasicAuth & BearerAuth')) { // TODO: fix this hacky exclusion of 'BasicAuth & BearerAuth'
+      modifiedComment = comment.replaceAll(/\s&\s/g, '&');
+    }
     if (comment.includes('@extends')) {
       const itemsToExtend = comment.match(/(@extends\s{[\s\S]*?})/g).map(i => i.replace('@extends {', '').replace('}', ''));
       modifiedComment = comment

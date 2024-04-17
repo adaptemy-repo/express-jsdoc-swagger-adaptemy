@@ -50,6 +50,10 @@ const expressJSDocSwagger = app => (userOptions = {}, userSwagger = {}) => {
         components: null,
       };
       const modifiedOrderObject = Object.assign(objectOrder, swaggerObject);
+      // eslint-disable-next-line dot-notation
+      modifiedOrderObject.components.schemas['Date'] = {
+        type: 'string', format: 'date-time', description: 'Date format', example: '2024-03-27T14:44:18.041Z',
+      };
       req.swaggerDoc = modifiedOrderObject;
       next();
     }, swaggerUi.serve, swaggerUi.setup(undefined, options.swaggerUiOptions));
