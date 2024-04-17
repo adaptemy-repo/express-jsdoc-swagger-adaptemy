@@ -267,7 +267,7 @@ describe('parseComponents method', () => {
        * @property {number=} year - The year - int64
        */
     `,
-    `
+      `
       /**
        * Album
        * @typedef {object} Album
@@ -335,7 +335,7 @@ describe('parseComponents method', () => {
        * @property {number=} year - The year - int64
        */
     `,
-    `
+      `
       /**
        * Album
        * @typedef {object} Album
@@ -395,7 +395,7 @@ describe('parseComponents method', () => {
        * @property {number=} year
        */
     `,
-    `
+      `
       /**
        * Album
        * @typedef {object} Album
@@ -454,7 +454,7 @@ describe('parseComponents method', () => {
        * @property {number=} year - The year - int64
        */
     `,
-    `
+      `
       /**
        * Author model
        * @typedef {object} Author
@@ -462,7 +462,7 @@ describe('parseComponents method', () => {
        * @property {number=} age - Author age - int64
        */
     `,
-    `
+      `
       /**
        * Album
        * @typedef {object} Album
@@ -733,6 +733,74 @@ describe('parseComponents method', () => {
     expect(result).toEqual(expected);
   });
 
+  it('Should parse a SingleAlbum schema which extends the reference of Song.', () => {
+    const jsodInput = [`
+        /**
+         * A song
+         * @typedef {object} Song
+         * @property {string} title.required - The title
+         * @property {string=} artist - The artist
+         * @property {number=} year - The year - int64
+         */
+      `, `
+      /**
+       * SingleAlbum
+       * @typedef {object} SingleAlbum
+       * @extends {Song}
+       * @property {array<string>=} songs - songs array
+       */
+    `];
+    const expected = {
+      components: {
+        schemas: {
+          SingleAlbum: {
+            allOf: [
+              {
+                $ref: '#/components/schemas/Song',
+              },
+            ],
+            type: 'object',
+            description: 'SingleAlbum',
+            properties: {
+              songs: {
+                type: 'array',
+                description: 'songs array',
+                items: {
+                  type: 'string',
+                },
+              },
+            },
+          },
+          Song: {
+            type: 'object',
+            required: [
+              'title',
+            ],
+            description: 'A song',
+            properties: {
+              title: {
+                type: 'string',
+                description: 'The title',
+              },
+              artist: {
+                type: 'string',
+                description: 'The artist',
+              },
+              year: {
+                type: 'number',
+                description: 'The year',
+                format: 'int64',
+              },
+            },
+          },
+        },
+      },
+    };
+    const parsedJSDocs = jsdocInfo()(jsodInput);
+    const result = parseComponents({}, parsedJSDocs);
+    expect(result).toEqual(expected);
+  });
+
   it('Should parse a SongOrAlbum schema with oneOf reference of Song and Album.', () => {
     const jsodInput = [`
       /**
@@ -875,7 +943,7 @@ describe('parseComponents method', () => {
         * @property {string=} email
         */
       `,
-    `
+      `
        /**
         * Profiles dict
         * @typedef {Dictionary<Profile>} Profiles
