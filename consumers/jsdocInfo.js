@@ -16,7 +16,7 @@ const jsdocInfo = (options = { unwrap: true }) => comments => {
   if (!comments || !Array.isArray(comments)) return [];
   return comments.map(comment => {
     let modifiedComment = comment;
-    if (comment.includes(' & ')) {
+    if (comment.includes(' & ') && !comment.includes('BasicAuth & BearerAuth')) { // TODO: fix this hacky exclusion of 'BasicAuth & BearerAuth'
       modifiedComment = comment.replaceAll(/\s&\s/g, '&');
     }
     if (comment.includes('@extends')) {
