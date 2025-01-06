@@ -43,7 +43,7 @@ const addTypeApplication = (applications, expression) => {
     };
   }
   // eslint-disable-next-line no-console
-  console.error('Unhandled swagger type encountered, notify aimee/renaldas if you see this warning.');
+  console.error('Unhandled swagger type encountered, notify aimee if you see this warning.');
   return {};
 };
 

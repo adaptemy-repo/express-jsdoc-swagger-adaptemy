@@ -56,7 +56,11 @@ const expressJSDocSwagger = app => (userOptions = {}, userSwagger = {}) => {
       };
       req.swaggerDoc = modifiedOrderObject;
       next();
-    }, swaggerUi.serve, swaggerUi.setup(undefined, options.swaggerUiOptions));
+    // }, swaggerUi.serve, swaggerUi.setup(undefined, options.swaggerUiOptions));
+    }, swaggerUi.serve, swaggerUi.setup(
+      undefined,
+      options.swaggerUiOptions,
+    ));
   }
 
   if (options.exposeApiDocs) {
