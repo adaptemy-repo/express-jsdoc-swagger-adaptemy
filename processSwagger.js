@@ -28,7 +28,7 @@ const processSwagger = (options, logger = defaultLogger) => {
   return globFilesMatches(options.baseDir, options.filesPattern)
     .then(readFiles)
     .then(getOnlyComments)
-    .then(jsdocInfo())
+    .then(jsdocInfo({ client: options.client, unwrap: true }))
     .then(data => {
       swaggerObject = getPaths(swaggerObject, data);
       logger({ entity: 'paths', swaggerObject });

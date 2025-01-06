@@ -14,7 +14,15 @@ const convertTagToAllOfUnionType = tag => {
 
 const jsdocInfo = (options = { unwrap: true }) => comments => {
   if (!comments || !Array.isArray(comments)) return [];
-  return comments.map(comment => {
+  return comments.filter(comment => {
+    // Remove client specific functions if the current client does not match one of the listed clients
+    let clients = [];
+    if (comment.includes('@clients')) {
+      const parsedValue = doctrine.parse(comment, options);
+      clients = parsedValue.tags.find(tag => tag.title === 'clients').description.split('|').map(t => t.trim());
+    }
+    return !comment.includes('@clients') || (comment.includes('@clients') && (clients.some(c => c === options.client)));
+  }).map(comment => {
     let modifiedComment = comment;
     if (comment.includes(' & ') && !comment.includes('BasicAuth & BearerAuth')) { // TODO: fix this hacky exclusion of 'BasicAuth & BearerAuth'
       modifiedComment = comment.replaceAll(/\s&\s/g, '&');
