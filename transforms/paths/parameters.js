@@ -59,7 +59,7 @@ const parseParameter = param => {
   const isDeprecated = extraOptions.includes(DEPRECATED);
   const shouldExplode = extraOptions.includes(EXPLODE);
   const shouldNotExplode = extraOptions.includes(NOEXPLODE);
-  const [description, enumValues, jsonOptions] = formatDescription(param.description);
+  const [description, enumValues, clientOptions, jsonOptions] = formatDescription(param.description);
   const options = {
     name,
     in: inOption,
