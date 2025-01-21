@@ -2,6 +2,7 @@ const mapDescription = require('./mapDescription');
 const errorMessage = require('./errorMessage');
 
 const ENUM_IDENTIFIER = 'enum:';
+const CLIENTS_IDENTIFIER = 'clients:';
 const JSON_IDENTIFIER = 'json:';
 const DESCRIPTION_DIVIDER = ' - ';
 
@@ -12,11 +13,19 @@ const formatDescription = description => {
   )).join(DESCRIPTION_DIVIDER);
   const enumOption = descriptionTypes.find(value => value.includes(ENUM_IDENTIFIER));
   const jsonOption = descriptionTypes.find(value => value.includes(JSON_IDENTIFIER));
+  const clientsOption = descriptionTypes.find(value => value.includes(CLIENTS_IDENTIFIER));
   const res = [descriptionValue];
   if (enumOption) {
     const [, enumOptions] = enumOption.split('enum:');
     const enumValues = enumOptions.split(',');
     res.push(enumValues);
+  } else {
+    res.push(undefined);
+  }
+  if (clientsOption) {
+    const [, clientsOptions] = clientsOption.split('clients:');
+    const clientValues = clientsOptions.split(',');
+    res.push(clientValues);
   } else {
     res.push(undefined);
   }

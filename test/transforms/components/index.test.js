@@ -172,6 +172,82 @@ describe('parseComponents method', () => {
     expect(result).toEqual(expected);
   });
 
+  it('Should return client specific property when client specified matches', () => {
+    const jsodInput = [`
+      /**
+       * A song
+       * @typedef {object} Song
+       * @property {string=} title - The title
+       * @property {string=} artist - The artist - clients:generic,hecof
+       * @property {number=} year - The year - int64
+       */
+    `];
+    const expected = {
+      components: {
+        schemas: {
+          Song: {
+            type: 'object',
+            description: 'A song',
+            properties: {
+              title: {
+                type: 'string',
+                description: 'The title',
+              },
+              artist: {
+                type: 'string',
+                description: 'The artist',
+              },
+              year: {
+                type: 'number',
+                description: 'The year',
+                format: 'int64',
+              },
+            },
+          },
+        },
+      },
+    };
+    const parsedJSDocs = jsdocInfo({ client: 'generic', unwrap: true })(jsodInput);
+    const result = parseComponents(undefined, parsedJSDocs, { client: 'generic' });
+    expect(result).toEqual(expected);
+  });
+
+  it('Should not client specific property when client specified does not match', () => {
+    const jsodInput = [`
+      /**
+       * A song
+       * @typedef {object} Song
+       * @property {string=} title - The title
+       * @property {string=} artist - The artist - clients:generic,hecof
+       * @property {number=} year - The year - int64
+       */
+    `];
+    const expected = {
+      components: {
+        schemas: {
+          Song: {
+            type: 'object',
+            description: 'A song',
+            properties: {
+              title: {
+                type: 'string',
+                description: 'The title',
+              },
+              year: {
+                type: 'number',
+                description: 'The year',
+                format: 'int64',
+              },
+            },
+          },
+        },
+      },
+    };
+    const parsedJSDocs = jsdocInfo({ client: 'bbc', unwrap: true })(jsodInput);
+    const result = parseComponents(undefined, parsedJSDocs, { client: 'bbc' });
+    expect(result).toEqual(expected);
+  });
+
   it('Should parse jsdoc component spec with json options', () => {
     const jsodInput = [`
       /**
