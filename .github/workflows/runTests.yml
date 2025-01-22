@@ -1,4 +1,4 @@
-name: Test
+name: Run express jsdoc tests
 
 on:
   pull_request:
