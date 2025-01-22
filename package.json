@@ -27,7 +27,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "lint": "./node_modules/.bin/eslint ."
+    "lint": "npx eslint ."
   },
   "husky": {
     "hooks": {

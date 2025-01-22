@@ -59,6 +59,7 @@ const parseParameter = param => {
   const isDeprecated = extraOptions.includes(DEPRECATED);
   const shouldExplode = extraOptions.includes(EXPLODE);
   const shouldNotExplode = extraOptions.includes(NOEXPLODE);
+  // eslint-disable-next-line no-unused-vars
   const [description, enumValues, clientOptions, jsonOptions] = formatDescription(param.description);
   const options = {
     name,

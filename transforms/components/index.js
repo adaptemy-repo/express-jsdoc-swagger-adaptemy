@@ -117,6 +117,7 @@ const parseSchema = (schema, options = {}) => {
   const [descriptionValue, enumValues, clientValues, jsonOptions] = formatDescription(schema.description);
   const [description, format] = mapDescription(descriptionValue);
   if (clientValues !== undefined) {
+    // eslint-disable-next-line no-console
     console.error(`TODO: add support for clients: ${JSON.stringify(clientValues)}; tell aimee if you see this error`);
   }
   if (!typedef || !typedef.name) return {};
