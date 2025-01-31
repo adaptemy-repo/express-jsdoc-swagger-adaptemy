@@ -10,6 +10,9 @@ const validateTypes = require('../utils/validateTypes');
 const REQUIRED = 'required';
 
 const getPropertyName = ({ name: propertyName }) => {
+  if (propertyName.startsWith('https')) {
+    return propertyName;
+  }
   const [name] = propertyName.split('.');
   return name;
 };

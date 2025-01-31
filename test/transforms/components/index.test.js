@@ -290,45 +290,37 @@ describe('parseComponents method', () => {
     expect(result).toEqual(expected);
   });
 
-  // TODO: add the functionality to make this test pass
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Should parse jsdoc component spec with non-standard property name', () => {
+  it('Should parse jsdoc component spec with non-standard property name', () => {
     const jsodInput = [`
       /**
-       * A song
-       * @typedef {object} Song
-       * @property {{'en-US': string - Some description US, 'en-UK': string - Some description UK}}
-       * @property {string=} artist - The artist - json:{"maxLength": 300}
-       * @property {number=} year - The year - int64 - json:{"minimum": 2000}
+       * Learner Profile Global Extensions model
+       * @typedef {{['https://api.adaptemy.io/param-a']: number, // - some description - clients:internal,bbc,
+       * ['https://api.adaptemy.io/param-b']: number,
+       * ['https://api.adaptemy.io/param-c']?: string // some description}} LearnerProfileGlobalExtensions
        */
     `];
     const expected = {
       components: {
         schemas: {
-          Song: {
+          LearnerProfileGlobalExtensions: {
             type: 'object',
-            description: 'A song',
+            description: 'Learner Profile Global Extensions model',
             properties: {
-              'en-US': {
-                type: 'string',
-                description: 'Some description US',
-              },
-              'en-UK': {
-                type: 'string',
-                description: 'Some description UK',
-              },
-              artist: {
-                type: 'string',
-                description: 'The artist',
-                maxLength: 300,
-              },
-              year: {
+              'https://api.adaptemy.io/param-a': {
+                clients: ['internal', 'bbc'],
+                description: 'some description',
                 type: 'number',
-                description: 'The year',
-                format: 'int64',
-                minimum: 2000,
+              },
+              'https://api.adaptemy.io/param-b': {
+                description: '',
+                type: 'number',
+              },
+              'https://api.adaptemy.io/param-c': {
+                type: 'string',
+                description: 'some description',
               },
             },
+            required: ['https://api.adaptemy.io/param-a', 'https://api.adaptemy.io/param-b'],
           },
         },
       },
