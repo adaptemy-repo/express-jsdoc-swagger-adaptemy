@@ -1,4 +1,5 @@
 const doctrine = require('doctrine');
+const { parseCommentWithUrlPropsAsKeys } = require('./utils/parseComments');
 
 const convertTagToAllOfUnionType = tag => {
   const elementsToCombine = tag.type.name.replaceAll(/\s/g, '').split('&').map(t => ({ type: 'NameExpression', name: t }));
@@ -33,7 +34,17 @@ const jsdocInfo = (options = { unwrap: true }) => comments => {
         .replace(/@typedef\s{object/g, `@typedef {allOf|${itemsToExtend.join('|')}`)
         .replace(/(@extends\s{[\s\S]*?})/g, '');
     }
+    if (comment.includes('@typedef {{')) { // funky param comment
+      modifiedComment = parseCommentWithUrlPropsAsKeys(comment);
+    }
     const parsedValue = doctrine.parse(modifiedComment, options);
+    // Post-process the parsed tags to fix URL property names (put :// back in)
+    parsedValue.tags.forEach(tag => {
+      if (tag.title === 'property' && tag.name && tag.name.startsWith('https')) {
+        // eslint-disable-next-line no-param-reassign
+        tag.name = `${tag.name.replace('https', 'https://')}`;
+      }
+    });
     const tags = parsedValue.tags.map(tag => ({
       ...tag,
       description: tag.description ? tag.description.replace('\n/', '').replace(/\/$/, '') : tag.description,
